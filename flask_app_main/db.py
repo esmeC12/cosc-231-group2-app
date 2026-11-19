@@ -16,6 +16,9 @@ def get_db():
         )
         g.db.row_factory = sqlite3.Row
 
+        #sqlite ignores foreign keys unless this is turned on
+        g.db.execute('PRAGMA foreign_keys = ON')
+
     return g.db
 
 #checks if connection was created; if so, it closes

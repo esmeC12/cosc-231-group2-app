@@ -11,6 +11,46 @@ from db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix = '/auth')
 
+@bp.route('/signup', methods=('GET', 'POST'))
+def signup():
+    if request.method == 'POST':
+        first_name = request.form.get('firstName', '').strip()
+        last_name = request.form.get('lastName', '').strip()
+        email = request.form.get('email', '').strip()
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        db = get_db()
+        error = None
+
+        #make sure nothing was left blank
+        if not first_name or not last_name:
+            error = 'First and last name are required.'
+        elif not email:
+            error = 'Email is required.'
+        elif not username:
+            error = 'Username is required.'
+        elif not password:
+            error = 'Password is required.'
+
+        if error is None:
+            try:
+                db.execute(
+                    'INSERT INTO User (firstName, lastName, email, username, password)'
+                    ' VALUES (?, ?, ?, ?, ?)',
+                    (first_name, last_name, email, username, generate_password_hash(password)),
+                )
+                db.commit()
+            except db.IntegrityError:
+                #username and email are UNIQUE in the User table
+                error = 'That username or email is already taken.'
+            else:
+                return redirect(url_for('auth.login'))
+
+        flash(error)
+
+    return render_template('auth/signup.html')
+
+
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':

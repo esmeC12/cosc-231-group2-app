@@ -32,4 +32,8 @@ def create_app(test_config = None):
     from . import auth
     app.register_blueprint(auth.bp)
 
+    #imports blueprint from home.py
+    from . import home
+    app.register_blueprint(home.bp)
+
     return app

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Home{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <p>Welcome, {{ g.user['firstName'] }}!</p>
+  <ul>
+    <li><a href="{{ url_for('home.support') }}">Support</a></li>
+  </ul>
+{% endblock %}
