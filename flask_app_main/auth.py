@@ -86,3 +86,15 @@ def load_logged_in_user():
         g.user = get_db().execute(
             'SELECT * FROM user WHERE userId = ?', (user_id,)
         ).fetchone()
+
+
+# put @login_required above a view to make people log in first
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
