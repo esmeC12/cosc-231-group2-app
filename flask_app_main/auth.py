@@ -7,7 +7,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 #db might be an issue
-from db import get_db
+from .db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix = '/auth')
 
@@ -69,8 +69,8 @@ def login():
 
         if error is None:
             session.clear()
-            session['user_id'] = user['user_id']
-            return redirect(url_for('index'))
+            session['user_id'] = user['userId']
+            return redirect(url_for('home.index'))
 
         flash(error)
 
@@ -84,5 +84,5 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            'SELECT * FROM user WHERE userId = ?', (user_id,)
         ).fetchone()
